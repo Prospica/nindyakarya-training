@@ -4,12 +4,12 @@ services:
 
     server:
         container_name: mongection_app
-        image: 10.14.0.97:5500/mongection/app:training-v1.0.0
+        image: 10.14.0.97:5500/mongection/app:user4-v1.0.0
         environment:
             DBUSER: mongection
             DBPASS: mongection
         ports:
-            - "10001:10001"
+            - "10004:10001"
         labels:
             - "app=mongection"
         networks:
