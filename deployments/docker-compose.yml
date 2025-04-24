@@ -20,17 +20,17 @@ services:
             - mongo:mongo
         restart: always
 
-    mongo:
-        container_name: mongection_db
-        image: 10.14.0.97:5500/mongection/db-mongo:user4-v1.0.4
-        ports:
-            - "27004:27017"
-        labels:
-            - "app=mongection"
-        volumes:
-            - "/var/mongection/data/db:/data/db"
-        networks:
-            - a1net
+    # mongo:
+    #     container_name: mongection_db
+    #     image: 10.14.0.97:5500/mongection/db-mongo:user4-v1.0.4
+    #     ports:
+    #         - "27004:27017"
+    #     labels:
+    #         - "app=mongection"
+    #     volumes:
+    #         - "/var/mongection/data/db:/data/db"
+    #     networks:
+    #         - a1net
 
 networks:
     a1net:
