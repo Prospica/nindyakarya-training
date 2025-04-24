@@ -6,14 +6,14 @@ const db = require('./db');
 
 const server = express();
 
-const PORT = 10001;
+const PORT = 8;
 
 var emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
 server.use(bodyParser.json());
 
 server.use(function(request, response, next) {
-    response.header("Access-Control-Allow-Origin", "http://localhost:10001");
+    response.header("Access-Control-Allow-Origin", "http://localhost:8");
     response.header("Access-Control-Allow-Headers", "Content-Type");
     next();
   });
