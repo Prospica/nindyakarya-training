@@ -28,7 +28,7 @@ services:
         labels:
             - "app=mongection"
         volumes:
-            - "/var/mongection/data/db:/data/db"
+            - "/var/mongection/data/db_user10:/data/db"
         networks:
             - a1net
 
