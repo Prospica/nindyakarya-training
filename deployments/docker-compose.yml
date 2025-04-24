@@ -4,7 +4,7 @@ services:
 
     server:
         container_name: mongection_app
-        image: 10.14.0.97:5500/mongection/app:user7-v1.0.0
+        image: 10.14.0.97:5500/mongection/app:training-user7-v1.0.0
         environment:
             DBUSER: mongection
             DBPASS: mongection
