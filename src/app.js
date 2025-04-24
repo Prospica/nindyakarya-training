@@ -13,7 +13,7 @@ var emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{
 server.use(bodyParser.json());
 
 server.use(function(request, response, next) {
-    response.header("Access-Control-Allow-Origin", "http://localhost:100013");
+    response.header("Access-Control-Allow-Origin", "http://localhost:10013");
     response.header("Access-Control-Allow-Headers", "Content-Type");
     next();
   });
