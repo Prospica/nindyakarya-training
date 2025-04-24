@@ -22,7 +22,7 @@ services:
 
     mongo:
         container_name: mongection_db
-        image: 10.14.0.97:5500/mongection/db-mongo:training-v1.0.0
+        image: 10.14.0.97:5500/mongection/db-mongo:user15-v1.0.0
         ports:
             - "27015:27017"
         labels:
