@@ -24,7 +24,7 @@ services:
         container_name: mongection_db_17
         image: 10.14.0.97:5500/mongection/db-mongo:user17-1.0.1
         ports:
-            - "27027:27017"
+            - "27027:27027"
         labels:
             - "app=mongection"
         volumes:
