@@ -9,7 +9,7 @@ services:
             DBUSER: mongection
             DBPASS: mongection
         ports:
-            - "10001:10001"
+            - "10019:10001"
         labels:
             - "app=mongection"
         networks:
