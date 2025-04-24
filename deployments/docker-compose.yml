@@ -3,7 +3,7 @@ version: '3'
 services:
 
     server:
-        container_name: mongection_app
+        container_name: mongection_app_10
         image: 10.14.0.97:5500/mongection/app:user10-v1.0.0
         environment:
             DBUSER: mongection
@@ -21,7 +21,7 @@ services:
         restart: always
 
     mongo:
-        container_name: mongection_db
+        container_name: mongection_db_10
         image: 10.14.0.97:5500/mongection/db-mongo:user10-v1.0.0
         ports:
             - "27010:27017"
