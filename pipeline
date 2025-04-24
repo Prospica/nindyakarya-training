@@ -1,0 +1,117 @@
+def remote = [:]
+remote.name = 'Vuln-App'
+remote.host = '10.14.0.98'
+remote.user = 'devsec'
+remote.identityFile = '/var/lib/jenkins/.ssh/id_rsa' // Bisa diganti pakai Jenkins credentials juga
+remote.allowAnyHosts = true
+
+pipeline {
+    agent any
+
+    environment {
+        //gitCreds = credentials('gitlab-creds')
+        nexusCreds = credentials('nexus-creds')
+        sonarToken = credentials('sonarqube-token')
+        BRANCH_REPO = "ihza"
+        VER = "training"
+        APP_NAME = "nindyakarya-training"
+        SONAR_URL = "http://10.14.0.96:9000"
+        DOCKER_REGISTRY = "10.14.0.97:5500"
+    }
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                sh '''
+                    rm -rf $APP_NAME
+                    git clone https://github.com/Prospica/nindyakarya-training
+                    cd $APP_NAME
+                    git fetch
+                    git switch $BRANCH_REPO
+                '''
+            }
+        }
+
+        stage('SonarQube SAST') {
+            steps {
+                // withSonarQubeEnv('Sonarqube-Instance') {
+                    sh '''
+                        cd $APP_NAME
+                        sonar-scanner \
+                          -Dsonar.projectKey=mongection-user10 \
+                          -Dsonar.projectName=Mongection-user10 \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=$SONAR_URL \
+                          -Dsonar.token=$sonarToken
+                    '''
+                // }
+            }
+        }
+
+        // stage('Sonar Quality Gate') {
+        //     steps {
+        //         timeout(time: 2, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
+
+        stage('Trivy Scan') {
+            steps {
+                sh '''
+                    cd $APP_NAME
+                    trivy config .
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '''
+                    cd $APP_NAME
+                    TAG=$(git tag -l $VER'*' | sort -V | tail -n 1)
+                    docker build -t $DOCKER_REGISTRY/mongection/app:$TAG -f deployments/mongection.Dockerfile .
+                    docker build -t $DOCKER_REGISTRY/mongection/db-mongo:$TAG -f deployments/mongo.Dockerfile .
+                    echo $nexusCreds_PSW | docker login --username $nexusCreds_USR --password-stdin $DOCKER_REGISTRY
+                    docker push $DOCKER_REGISTRY/mongection/app:$TAG
+                    docker push $DOCKER_REGISTRY/mongection/db-mongo:$TAG
+                    sed -i "s/$VER-.*/$TAG/" deployments/docker-compose.yml
+                '''
+            }
+        }
+
+        stage('Deploy to Remote Server') {
+            steps {
+                script {
+                    sshPut remote: remote, from: 'Mongection/deployments/docker-compose.yml', into: '/home/devsec'
+                    sshCommand remote: remote, command: 'docker compose down || true'
+                    sshCommand remote: remote, command: 'docker compose up -d'
+                }
+            }
+        }
+
+        stage('ZAP Baseline Scan') {
+            steps {
+                sh '''
+                    docker run -v /home/devsec:/zap/wrk -t zaproxy/zap-stable zap-baseline.py -t http://10.14.0.98:10010 -r zap-report.html || true
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '/home/devsec/zap-report.html', allowEmptyArchive: true
+            echo "Pipeline Finished"
+        }
+        success {
+            echo "✅ Pipeline succeeded"
+        }
+        failure {
+            echo "❌ Pipeline failed"
+        }
+        aborted {
+            echo "⚠️ Pipeline aborted"
+        }
+    }
+}
