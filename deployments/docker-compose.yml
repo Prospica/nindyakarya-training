@@ -4,7 +4,7 @@ services:
 
     server:
         container_name: mongection_app
-        image: 10.14.0.97:5500/mongection/app:user19-v1.0.0
+        image: 10.14.0.97:5500/mongection/app:training-user19-v1.0.0
         environment:
             DBUSER: mongection
             DBPASS: mongection
@@ -22,7 +22,7 @@ services:
 
     mongo:
         container_name: mongection_db
-        image: 10.14.0.97:5500/mongection/db-mongo:user19-v1.0.0
+        image: 10.14.0.97:5500/mongection/db-mongo:training-user19-v1.0.0
         ports:
             - "27019:27017"
         labels:
