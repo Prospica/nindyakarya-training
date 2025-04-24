@@ -4,12 +4,12 @@ services:
 
     server:
         container_name: mongection_app
-        image: 10.14.0.97:5500/mongection/app:training-v1.0.0
+        image: 10.14.0.97:5500/mongection/app:user7-v1.0.0
         environment:
             DBUSER: mongection
             DBPASS: mongection
         ports:
-            - "10001:10001"
+            - "10007:10001"
         labels:
             - "app=mongection"
         networks:
@@ -24,7 +24,7 @@ services:
         container_name: mongection_db
         image: 10.14.0.97:5500/mongection/db-mongo:training-v1.0.0
         ports:
-            - "27017:27017"
+            - "27007:27017"
         labels:
             - "app=mongection"
         volumes:
